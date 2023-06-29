@@ -1,22 +1,26 @@
 package main
 
 import (
+	"encoding/gob"
 	"log"
 	"net/http"
 	"os"
-	"webapp/pkg/db"
+	"webapp/pkg/data"
+	"webapp/pkg/repository"
+	"webapp/pkg/repository/dbrepo"
 
 	"github.com/alexedwards/scs/v2"
 	"github.com/joho/godotenv"
 )
 
 type application struct {
-	DB     db.PostgresConn 
+	DB     repository.DatabaseRepo
 	DSN     string
 	Session *scs.SessionManager
 }
 
 func main() {
+    gob.Register(data.User{})
 	// setup an app config
 	app := application{}
 
@@ -27,13 +31,13 @@ func main() {
 	}
 
 	app.DSN = os.Getenv("DSN")
-
 	conn, err := app.connectToDB()
     if err != nil {
         log.Fatal(err)
     }
+    defer conn.Close()
     
-    app.DB = db.PostgresConn{DB: conn}
+    app.DB = &dbrepo.PostgresDBRepo{DB: conn} 
 
 	// get a session manager
 	app.Session = getSession()

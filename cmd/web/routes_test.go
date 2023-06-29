@@ -17,6 +17,7 @@ func Test_application_routes(t *testing.T) {
 	var registered = []registeredRoutes{
 		{"/", "GET"},
         {"/login", "POST"},
+        {"/user/profile", "GET"},
 		{"/static/*", "GET"},
 	}
 

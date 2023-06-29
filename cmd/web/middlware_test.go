@@ -6,6 +6,7 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+	"webapp/pkg/data"
 )
 
 type middlewareTest struct {
@@ -69,6 +70,42 @@ func Test_application_ipFromContext(t *testing.T) {
     // perform the test
     if !strings.EqualFold("test_api", ip) {
         t.Error("wrong value retunred from context")
+    }
+
+}
+
+type AuthTest struct {
+    name string
+    isAuth bool
+}
+
+func Test_app_auth(t *testing.T) {
+    nextHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+    })
+    
+    var tests = []AuthTest {
+        {"logged in", true},
+        {"not logged in", false},
+    }
+
+    for _, test := range tests {
+        handlerToTest := app.auth(nextHandler)
+        req := httptest.NewRequest("GET", "http://testing", nil)
+        req = addContextAndSessionToRequest(req, app)
+        if test.isAuth {
+            app.Session.Put(req.Context(), "user", data.User{ID: 1})
+        }
+        rr := httptest.NewRecorder()
+        handlerToTest.ServeHTTP(rr, req)
+
+        if test.isAuth && rr.Code != http.StatusOK {
+            t.Errorf("%s: expected status code of 200 but got %d", test.name, rr.Code)
+        }
+
+        if !test.isAuth && rr.Code != http.StatusTemporaryRedirect {
+            t.Errorf("%s: expected status code 307, but got %d", test.name, rr.Code)
+        }
     }
 
 }
