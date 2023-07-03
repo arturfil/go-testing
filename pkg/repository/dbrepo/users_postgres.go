@@ -44,6 +44,7 @@ func (m *PostgresDBRepo) AllUsers() ([]*data.User, error) {
         var user data.User
         err := rows.Scan(
             &user.ID,
+            &user.Email,
             &user.FirstName,
             &user.LastName,
             &user.Password,
@@ -80,6 +81,7 @@ func (m *PostgresDBRepo) GetUser(id int) (*data.User, error) {
         &user.ID,
         &user.Email,
         &user.FirstName,
+        &user.LastName,
         &user.Password,
         &user.IsAdmin,
         &user.CreatedAt,

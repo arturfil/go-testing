@@ -13,8 +13,11 @@ remove_coveragefile:
 show_coverage:
 	go tool cover -html=${COVER_OUT}
 
-test:
+test-all:
 	go test -v ./...
+
+test-repo:
+	go test -v ./pkg/repository/dbrepo
 
 postgres:
 	docker run --name ${DB_DOCKER_CONTAINER} -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine
