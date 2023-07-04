@@ -198,3 +198,30 @@ func TestPosgresDBRepoGetUserByEmail(t *testing.T) {
     }
 }
 
+func TestPostgresDBRepoUpdateUser(t *testing.T) {
+    user, _ := testRepo.GetUser(2)
+    user.FirstName = "Jane"
+    user.Email = "jane@smith.com"
+
+    err := testRepo.UpdateUser(*user)
+    if err != nil {
+        t.Errorf("error updating user %d: %s", 2, err)
+    }
+
+    user, _ = testRepo.GetUser(2)
+    if user.FirstName != "Jane" || user.Email != "jane@smith.com" {
+        t.Errorf("expected updated record to have first name Jane and email jane@mith.com but got %s %s", user.FirstName, user.Email)
+    }
+}
+
+func TestPosgresDBRepoDeleteUser(t *testing.T) {
+    err := testRepo.DeleteUser(2)
+    if err != nil {
+        t.Errorf("error deleting user id 2: %s", err)
+    }
+
+    _, err = testRepo.GetUser(2)
+    if err == nil {
+        t.Error("retrieve user id 2, who should've been deleted")
+    }
+}
