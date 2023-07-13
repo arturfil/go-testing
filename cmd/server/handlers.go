@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"log"
 	"net/http"
 
 	"golang.org/x/crypto/bcrypt"
@@ -18,25 +17,25 @@ func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
     // read json payload
     err := app.readJSON(w, r, &creds)
     if err != nil {
-        app.errorJSON(w, errors.New("unauthorized json read"), http.StatusUnauthorized)
+        app.errorJSON(w, errors.New("unauthorized"), http.StatusUnauthorized)
         return
     }
     // look up user by email
     user, err := app.DB.GetUserByEmail(creds.Username)
     if err != nil {
-        app.errorJSON(w, errors.New("unauthorized getByEmail"), http.StatusUnauthorized)
+        app.errorJSON(w, errors.New("unauthorized"), http.StatusUnauthorized)
         return
     }
     // check password
     err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(creds.Password))
     if err != nil {
-        app.errorJSON(w, errors.New("unauthorized check Password"), http.StatusUnauthorized)
+        app.errorJSON(w, errors.New("unauthorized"), http.StatusUnauthorized)
         return
     } 
     // if password true; generate token
     tokenPairs, err := app.generateTokenPair(user)
     if err != nil {
-        log.Println(err)
+        app.errorJSON(w, errors.New("unauthorized"), http.StatusUnauthorized)
         return
     } 
     // send token to user

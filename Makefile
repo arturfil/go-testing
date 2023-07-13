@@ -22,6 +22,9 @@ test-repo:
 ## go test -v ./pkg/repository/dbrepo
 	go test -v -tags=integration ./...
 
+test-server:
+	go test -v ./cmd/server 
+
 postgres:
 	docker run --name ${DB_DOCKER_CONTAINER} -p 5432:5432 -e POSTGRES_USER=${USER} -e POSTGRES_PASSWORD=${PASSWORD} -d postgres:12-alpine
 # creates the db withing the postgres container
