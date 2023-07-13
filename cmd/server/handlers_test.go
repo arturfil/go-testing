@@ -17,7 +17,12 @@ type test struct {
 
 func Test_app_authentication(t *testing.T) {
 	var tests = []test{
-		{"valid user", `{"email":"admin@example.com", "password":"secret"}`, 200},
+		{"valid user", `{"email":"admin@example.com", "password":"secret"}`, http.StatusOK},
+		{"not json", `not json`, http.StatusUnauthorized},
+		{"empty json", `{}`, http.StatusUnauthorized},
+		{"empty email", `{"email":"", "password":"secret"}`, http.StatusUnauthorized},
+		{"empty password", `{"email":"admin@example.com", "password":""}`, http.StatusUnauthorized},
+		{"invalid user", `{"email":"admin@other.com", "password":"secret"}`, http.StatusUnauthorized},
 	}
     for _, test := range tests {
         var reader io.Reader
