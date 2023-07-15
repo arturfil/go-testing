@@ -24,7 +24,7 @@ type Claims struct {
     jwt.RegisteredClaims
 }
 
-func (app *application) getTokenFromHeaderandVerify(w http.ResponseWriter, r *http.Request) (string, *Claims, error) {
+func (app *application) getTokenFromHeaderAndVerify(w http.ResponseWriter, r *http.Request) (string, *Claims, error) {
     // add a header
     w.Header().Add("Vary", "Authorization")
     // get the authorization header
@@ -40,7 +40,6 @@ func (app *application) getTokenFromHeaderandVerify(w http.ResponseWriter, r *ht
     }
     // check if we have "Bearer"
     if headerParts[0] != "Bearer" {
-
         return "", nil, errors.New("unauthorized: no Bearer")
     }
     token := headerParts[1]

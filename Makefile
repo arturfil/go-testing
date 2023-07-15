@@ -15,6 +15,9 @@ remove_coveragefile:
 show_coverage:
 	go tool cover -html=${COVER_OUT}
 
+server-coverage:
+	go test ./cmd/server -coverprofile=coverage.out && go tool cover -html=coverage.out
+
 test-all:
 	go test -v ./...
 
@@ -49,3 +52,9 @@ run-server: stop_containers start-docker
 
 run-web: stop_containers start-docker
 	go run ./cmd/web
+
+expired:
+	go run ./cmd/cli/ -action=expired
+
+valid:
+	go run ./cmd/cli/ -action=valid
