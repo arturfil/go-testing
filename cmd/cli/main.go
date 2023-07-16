@@ -24,7 +24,7 @@ func main() {
 
     claims := token.Claims.(jwt.MapClaims)
     claims["name"] = "John Doe"
-    claims["sub"] = 1
+    claims["sub"] = "1"
     claims["admin"] = true
     claims["aud"] = "example.com"
     claims["iss"] = "example.com"
