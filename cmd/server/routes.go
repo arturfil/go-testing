@@ -9,37 +9,20 @@ import (
 
 func (app *application) routes() http.Handler {
     mux := chi.NewRouter()
-
     // register middleware
     mux.Use(middleware.Recoverer)
-
-    // test handler
-    mux.Get("/test", func(w http.ResponseWriter, r *http.Request) {
-        var payload = struct {
-            Message string `json:"message"`
-        }{
-            Message: "hello world",
-        }
-        _ = app.writeJSON(w, http.StatusOK, payload)
-    })
-
-    // mux.Use(app.enableCORS)
-
+    mux.Use(app.enableCORS)
     // auth routes - auth handler, refresh
     mux.Post("/auth", app.authenticate)
     mux.Post("/refresh-token", app.refresh)
-
-    // test handler
-
     // protected routes
     mux.Route("/users", func(mux chi.Router) {
+        mux.Use(app.authRequired)
         mux.Get("/", app.allUsers)
         mux.Get("/{userID}", app.getUser)
-        mux.Delete("/{userID}", app.deleteUser)
-        mux.Post("/{userID}", app.insertUser)
+        mux.Post("/", app.insertUser)
         mux.Patch("/{userID}", app.updateUser)
-
+        mux.Delete("/{userID}", app.deleteUser)
     })
-
     return mux
 }

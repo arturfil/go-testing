@@ -23,8 +23,18 @@ func (m *TestDBRepo) AllUsers() ([]*data.User, error) {
 
 // GetUser - when providing an id, you return the user
 func (m *TestDBRepo) GetUser(id int) (*data.User, error) {
-    var user = data.User{ID: 1}
-    return &user, nil
+    var user = data.User{}
+
+    if id == 1 {
+        user = data.User{
+            ID: 1,
+            FirstName: "Admin",
+            LastName: "User",
+            Email: "admin@example.com",
+        }
+        return &user, nil
+    }
+    return nil, errors.New("user not found") 
 }
 
 // GetUserByEmail - given an email, this method will return a user
@@ -52,7 +62,10 @@ func (m *TestDBRepo) InsertUser(user data.User) (int, error) {
 
 // UpdateUser - change a users info, provided the data and the ID included
 func(m *TestDBRepo) UpdateUser(u data.User) error {
-    return nil
+    if u.ID == 1 {
+        return nil
+    }
+    return errors.New("update failed - no user found")
 }
 
 // DeleteUser - delete user once an id is providedf
@@ -69,3 +82,5 @@ func (m *TestDBRepo) ResetPassword(id int, password string) error {
 func (m *TestDBRepo) InsertUserImage(i data.UserImage) (int, error) {
     return 1, nil
 }
+
+
